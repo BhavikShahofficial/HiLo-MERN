@@ -7,7 +7,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
   console.log(location.pathname, isAuthenticated);
 
   if (isAuthenticated === null) {
-    console.log("Auth status before rendering:", isAuthenticated);
+    // console.log("Auth status before rendering:", isAuthenticated);
 
     return <Skeleton className="w-[600px] h-[600px] bg-black text-center" />;
   }

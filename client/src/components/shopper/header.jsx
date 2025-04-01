@@ -54,33 +54,27 @@ function MenuItems() {
     sessionStorage.removeItem("filters");
 
     if (getCurrentMenuItem.id === "home") {
-      // Explicitly navigate to home without query params
       navigate("/shop/home");
       return;
     }
+
     if (getCurrentMenuItem.id === "products") {
-      // Explicitly navigate to products without query params
       navigate("/shop/listing");
       return;
     }
-    const currentFilter =
-      getCurrentMenuItem.id !== "search"
-        ? {
-            category: [getCurrentMenuItem.id],
-          }
-        : null;
 
-    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    const category =
+      getCurrentMenuItem.id !== "search" ? getCurrentMenuItem.id : null;
+    sessionStorage.setItem("filters", JSON.stringify({ category }));
 
-    if (location.pathname.includes("search")) {
-      navigate(`/shop/listing?category=${getCurrentMenuItem.id}`);
-    } else if (
-      location.pathname.includes("listing") &&
-      currentFilter !== null
-    ) {
-      setSearchParams(
-        new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
-      );
+    if (category) {
+      if (!location.pathname.includes("/shop/listing")) {
+        // Navigate to /shop/listing first, ensuring query parameters are set after
+        navigate(`/shop/listing?category=${category}`, { replace: true });
+      } else {
+        // If already on /shop/listing, just update the query params
+        setSearchParams({ category });
+      }
     } else {
       navigate(getCurrentMenuItem.path);
     }
