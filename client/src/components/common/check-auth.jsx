@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { Skeleton } from "../ui/skeleton";
 
 function CheckAuth({ isAuthenticated, user, children }) {
   const location = useLocation();
@@ -6,7 +7,9 @@ function CheckAuth({ isAuthenticated, user, children }) {
   console.log(location.pathname, isAuthenticated);
 
   if (isAuthenticated === null) {
-    return <Skeleton className="w-[600px] h-[600px] bg-black" />;
+    console.log("Auth status before rendering:", isAuthenticated);
+
+    return <Skeleton className="w-[600px] h-[600px] bg-black text-center" />;
   }
 
   if (location.pathname === "/") {

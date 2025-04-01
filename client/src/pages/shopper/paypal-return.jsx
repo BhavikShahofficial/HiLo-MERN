@@ -1,21 +1,23 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Card, CardHeader, CardTitle } from "../../components/ui/card";
 import { useLocation, useNavigate } from "react-router-dom";
 import { capturePayment } from "@/store/shop/orderSlice";
 import { useEffect, useState } from "react";
+import { checkAuth } from "@/store/authSlice"; // Import the checkAuth action if needed
 
 function PaypalReturnPage() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Use URLSearchParams to retrieve the query parameters from the URL
-  const params = new URLSearchParams(location.search);
-  const paymentId = params.get("paymentId"); // paymentId is correct as per the URL
-  const payerId = params.get("PayerID"); // Correct case for PayerID
-
+  const { isAuthenticated } = useSelector((state) => state.auth); // Get authentication status
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Use URLSearchParams to retrieve the query parameters from the URL
+  const params = new URLSearchParams(location.search);
+  const paymentId = params.get("paymentId");
+  const payerId = params.get("PayerID");
 
   useEffect(() => {
     // Log to check the extracted parameters
@@ -37,7 +39,14 @@ function PaypalReturnPage() {
           if (data?.payload?.success) {
             sessionStorage.removeItem("currentOrderId");
             console.log("Navigating to success page...");
-            navigate("/shop/payment-success");
+
+            // Check if the user is authenticated before navigating
+            if (isAuthenticated) {
+              navigate("/shop/payment-success");
+            } else {
+              // If not authenticated, redirect to login page
+              navigate("/auth/login");
+            }
           } else {
             console.log(
               "Payment capture failed:",
@@ -55,8 +64,10 @@ function PaypalReturnPage() {
         });
     } else {
       console.log("Missing paymentId or payerId in URL");
+      setError("Invalid payment data.");
+      setLoading(false);
     }
-  }, [paymentId, payerId, dispatch, navigate]);
+  }, [paymentId, payerId, dispatch, navigate, isAuthenticated]);
 
   return (
     <Card>
