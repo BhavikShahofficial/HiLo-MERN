@@ -35,8 +35,8 @@ function ShoppingProductTile({
           ) : null}
         </div>
         <CardContent>
-          <h2 className="text-lg font-bold mb-2">{product.title}</h2>
-          <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-bold mb-1">{product.title}</h2>
+          <div className="flex justify-between items-center mb-1">
             <span className="text-sm text-muted-foreground">
               {categoryOptionsMap[product.category]}
             </span>
@@ -44,7 +44,7 @@ function ShoppingProductTile({
               {brandOptionsMap[product.brand]}
             </span>
           </div>
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex justify-between items-center mb-1">
             <span
               className={`${
                 product?.salePrice > 0 ? "line-through" : ""
@@ -65,7 +65,7 @@ function ShoppingProductTile({
           </Button>
         ) : (
           <Button
-            className="w-full"
+            className="w-full mb-0"
             onClick={() => handleAddToCart(product?._id, product?.totalStock)}
           >
             Add To Cart

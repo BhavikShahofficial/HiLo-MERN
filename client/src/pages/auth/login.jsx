@@ -58,6 +58,7 @@ function AuthLogin() {
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
+        forgetPassword={() => navigate("/auth/forgot-password")}
       />
     </div>
   );

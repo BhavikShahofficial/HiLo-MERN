@@ -3,7 +3,7 @@ import axios from "axios";
 
 const initialState = {
   isAuthenticated: false,
-  isLoading: true,
+  isLoading: false,
   user: null,
   token: null,
 };
@@ -42,6 +42,33 @@ export const logoutUser = createAsyncThunk("/auth/logout", async () => {
   );
   return response.data;
 });
+export const forgotPassword = createAsyncThunk(
+  "/auth/forgot-password",
+  async (email) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
+      { email },
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "/auth/reset-password",
+  async ({ token, password }) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`,
+      { password },
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  }
+);
 //IF there Is A Subdomain
 
 // export const checkAuth = createAsyncThunk("/auth/checkauth", async () => {
@@ -123,6 +150,24 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(forgotPassword.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(resetPassword.rejected, (state) => {
+        state.isLoading = false;
       })
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;

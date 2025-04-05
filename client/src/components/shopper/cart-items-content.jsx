@@ -65,7 +65,7 @@ function UserCartItemsContent({ cartItem }) {
   }
 
   return (
-    <div className="flex items-center space-x-4 p-4 border rounded">
+    <div className="flex items-center space-x-4 p-4 border-rounded">
       <img
         src={product.image}
         alt={product.title || "No title"}
