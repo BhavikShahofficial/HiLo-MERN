@@ -93,47 +93,67 @@ const createOrder = async (req, res) => {
 const capturePayment = async (req, res) => {
   try {
     const { paymentId, payerId, orderId } = req.body;
+
     let order = await Orders.findById(orderId);
     if (!order) {
       return res
         .status(404)
         .json({ message: "Order not found", success: false });
     }
-    order.paymentStatus = "Paid";
-    order.orderStatus = "Confirmed";
-    order.paymentId = paymentId;
-    order.payerId = payerId;
 
-    //cart item quantity
-    for (let item of order.cartItems) {
-      const product = await Product.findById(item.productId);
-      if (!product) {
-        return res.status(404).json({
-          message: `Not Engough Stock For The Selected Product ${product.title}`,
-          success: false,
-        });
+    // Execute payment via PayPal
+    paypal.payment.execute(
+      paymentId,
+      { payer_id: payerId },
+      async (error, payment) => {
+        if (error) {
+          console.error("Payment execution error:", error.response);
+          return res.status(400).json({
+            message: "Payment execution failed",
+            success: false,
+          });
+        } else {
+          // Update order
+          order.paymentStatus = "Paid";
+          order.orderStatus = "Confirmed";
+          order.paymentId = paymentId;
+          order.payerId = payerId;
+
+          // Reduce stock
+          for (let item of order.cartItems) {
+            const product = await Product.findById(item.productId);
+            if (!product) {
+              return res.status(404).json({
+                message: `Product not found: ${item.title}`,
+                success: false,
+              });
+            }
+
+            product.totalStock -= item.quantity;
+            await product.save();
+          }
+
+          // Clear cart
+          await Cart.findByIdAndDelete(order.cartId);
+          await order.save();
+
+          return res.status(200).json({
+            message: "Payment captured successfully",
+            success: true,
+            data: order,
+          });
+        }
       }
-
-      product.totalStock -= item.quantity;
-      await product.save();
-    }
-
-    const getCartId = order.cartId;
-    await Cart.findByIdAndDelete(getCartId);
-    await order.save();
-    res.status(200).json({
-      message: "Payment captured successfully",
-      success: true,
-      data: order,
-    });
+    );
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
+    console.error("Server error:", error);
+    return res.status(500).json({
       message: "Internal Server Error",
       success: false,
     });
   }
 };
+
 const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;

@@ -121,7 +121,7 @@ function ShopperHome() {
     }
   }, [productDetails]);
 
-  console.log("productList", productList);
+  // console.log("productList", productList);
 
   useEffect(() => {
     dispatch(getFeatureImage());
