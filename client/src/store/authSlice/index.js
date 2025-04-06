@@ -44,7 +44,12 @@ export const logoutUser = createAsyncThunk("/auth/logout", async () => {
 });
 export const forgotPassword = createAsyncThunk(
   "/auth/forgot-password",
-  async (email) => {
+  async (emailOrObject) => {
+    const email =
+      typeof emailOrObject === "string" ? emailOrObject : emailOrObject?.email;
+
+    console.log("Forgot Password - email being sent:", email); // <-- Add this to debug
+
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
       { email },
