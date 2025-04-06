@@ -94,13 +94,14 @@ function App() {
           <Route path="home" element={<ShopperHome />} />
           <Route path="listing" element={<ShopperListing />} />
           <Route path="checkout" element={<ShopperCheckout />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
+
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<ShopperSearch />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
         <Route path="/unauth-page" element={<UnauthPage />} />
+        <Route path="/shop/paypal-return" element={<PaypalReturnPage />} />
       </Routes>
     </div>
   );
