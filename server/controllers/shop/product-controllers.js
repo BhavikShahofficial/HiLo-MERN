@@ -1,8 +1,14 @@
 const Product = require("../../models/Product");
 
 const getFilteredProducts = async (req, res) => {
+  const getEffectivePrice = (product) =>
+    product.salePrice && product.salePrice > 0
+      ? Number(product.salePrice)
+      : Number(product.price);
   try {
     const { category = [], brand = [], sortBy = "title-atoz" } = req.query;
+    const normalizedSortBy = sortBy.toLowerCase();
+
     let filters = {};
     if (category.length) {
       filters.category = { $in: category.split(",") };
@@ -10,26 +16,41 @@ const getFilteredProducts = async (req, res) => {
     if (brand.length) {
       filters.brand = { $in: brand.split(",") };
     }
-    let sort = {};
-    switch (sortBy) {
-      case "price-asc":
-        sort.price = 1;
-        break;
-      case "price-desc":
-        sort.price = -1;
-        break;
-      case "title-atoz":
-        sort.title = 1;
-        break;
-      case "title-ztoa":
-        sort.title = -1;
-        break;
-      default:
-        sort.price = 1;
-        break;
-    }
 
-    const products = await Product.find(filters).sort(sort);
+    const products = await Product.find(filters).lean();
+
+    // console.log(
+    //   "Products (before sort):",
+    //   products.map((p) => ({
+    //     title: p.title,
+    //     price: p.price,
+    //     salePrice: p.salePrice,
+    //   }))
+    // );
+
+    products.sort((a, b) => {
+      const priceA = getEffectivePrice(a);
+      const priceB = getEffectivePrice(b);
+
+      switch (normalizedSortBy) {
+        case "price-asc":
+          return priceA - priceB;
+        case "price-desc":
+          return priceB - priceA;
+        case "title-atoz":
+          return a.title.localeCompare(b.title);
+        case "title-ztoa":
+          return b.title.localeCompare(a.title);
+        default:
+          return a.title.localeCompare(b.title);
+      }
+    });
+
+    console.log(
+      "Products (after sort):",
+      products.map((p) => p.title)
+    );
+
     res.status(200).json({ success: true, data: products });
   } catch (error) {
     console.error(error);

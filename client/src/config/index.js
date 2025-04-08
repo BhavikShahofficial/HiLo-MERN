@@ -139,11 +139,11 @@ export const shoppingMenuItems = [
     lable: "Footwear",
     path: "/shop/listing",
   },
-  {
-    id: "search",
-    lable: "Search",
-    path: "/shop/search",
-  },
+  // {
+  //   id: "search",
+  //   lable: "Search",
+  //   path: "/shop/search",
+  // },
 ];
 
 export const categoryOptionsMap = {

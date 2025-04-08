@@ -32,10 +32,10 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
   function handleManageAddress(event) {
     event.preventDefault();
 
-    if (addressList.length >= 3 && currentEditedId === null) {
+    if (addressList.length >= 2 && currentEditedId === null) {
       setFormData(initialAddressFormData);
       toast({
-        title: "Maximum 3 addresses allowed",
+        title: "Maximum 2 addresses allowed",
         variant: "destructive",
       });
       return;

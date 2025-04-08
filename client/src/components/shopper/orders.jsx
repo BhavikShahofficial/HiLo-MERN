@@ -27,7 +27,6 @@ function ShopperOrders() {
 
   function handleFetchOrderDetails(getId) {
     dispatch(getOrderDetails(getId));
-    setOpenDetailsDialog(true); // Open dialog when fetching order details
   }
 
   useEffect(() => {
@@ -45,7 +44,6 @@ function ShopperOrders() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
               <TableHead>Order Date</TableHead>
               <TableHead>Order Status</TableHead>
               <TableHead>Order Price</TableHead>
@@ -58,7 +56,7 @@ function ShopperOrders() {
             {orderList && orderList.length > 0
               ? orderList.map((orderItem) => (
                   <TableRow key={orderItem._id}>
-                    <TableCell>{orderItem._id}</TableCell>
+                    {/* <TableCell>{orderItem._id}</TableCell> */}
                     <TableCell>{orderItem.orderDate.split("T")[0]}</TableCell>
                     <TableCell>
                       <Badge

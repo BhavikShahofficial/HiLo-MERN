@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     const rawToken = sessionStorage.getItem("token");
     if (rawToken) {
-      const token = JSON.parse(rawToken); // ✅ Parse it before using
+      const token = JSON.parse(rawToken);
       dispatch(checkAuth(token));
     }
   }, [dispatch]);

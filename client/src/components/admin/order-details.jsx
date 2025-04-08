@@ -40,7 +40,7 @@ function AdminOrderDetails({ orderDetails }) {
     });
   }
   return (
-    <DialogContent className="sm:max-w-[600px] mt-5 mb-5 p-5">
+    <DialogContent className="sm:max-w-[600px]">
       <div className="grid gap-3">
         <div className="grid gap-2">
           <div className="flex mt-1 items-center justify-between">

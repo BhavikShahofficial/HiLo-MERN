@@ -65,11 +65,11 @@ function UserCartItemsContent({ cartItem }) {
   }
 
   return (
-    <div className="flex items-center space-x-4 p-4 border-rounded">
+    <div className="flex items-center space-x-3 p-3 border-rounded">
       <img
         src={product.image}
         alt={product.title || "No title"}
-        className="w-20 h-20 rounded object-cover bg-gray-200"
+        className="w-[10rem] h-[10rem] rounded object-cover bg-gray-200"
       />
       <div className="flex-1">
         <h3 className="font-extrabold text-black">

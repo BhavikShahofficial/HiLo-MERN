@@ -5,7 +5,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import Logo from "../../assets/logo.png";
-import { CircleUser, LogOut, Menu, ShoppingCart } from "lucide-react";
+import { CircleUser, LogOut, Menu, ShoppingCart, Search } from "lucide-react";
 import { SheetTrigger, Sheet, SheetContent } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -114,7 +114,18 @@ function HeaderRightContent() {
     dispatch(fetchCartItem(user?.id));
   }, [dispatch]);
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+    <div className="flex flex-row items-center gap-4 lg:gap-6">
+      {/* 🔍 Search Icon */}
+      <Button
+        onClick={() => navigate("/shop/search")}
+        variant="outline"
+        size="icon"
+      >
+        <Search className="w-6 h-6" />
+        <span className="sr-only">Search</span>
+      </Button>
+
+      {/* 🛒 Cart Button */}
       <Sheet open={openCart} onOpenChange={() => setOpenCart(false)}>
         <Button
           onClick={() => setOpenCart(true)}
@@ -137,6 +148,8 @@ function HeaderRightContent() {
           }
         />
       </Sheet>
+
+      {/* 👤 Avatar + Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
@@ -165,28 +178,42 @@ function HeaderRightContent() {
 
 function ShopHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
+
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
+    <header className="sticky top-0 z-40 w-full border-b bg-white dark:bg-background">
       <div className="flex justify-between items-center h-16 px-4 md:px-6">
+        {/* Logo */}
         <Link to="/shop/home">
           <img
             src={Logo}
             alt="HiLo"
-            className="w-[130px] h-auto mb-3 object-contain "
+            className="w-12 lg:w-28 h-auto object-contain"
           />
         </Link>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="lg:hidden">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle header menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-full max-w-xs">
-            <MenuItems />
-            <HeaderRightContent />
-          </SheetContent>
-        </Sheet>
+
+        {/* Mobile View: Hamburger + Cart + Avatar */}
+        <div className="flex items-center gap-4 lg:hidden">
+          {/* Hamburger Menu */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle header menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="left"
+              className="w-full max-w-xs p-4 overflow-y-auto"
+            >
+              <MenuItems />
+            </SheetContent>
+          </Sheet>
+
+          {/* Cart + Avatar */}
+          <HeaderRightContent />
+        </div>
+
+        {/* Desktop View: Navigation + Account */}
         <div className="hidden lg:block">
           <MenuItems />
         </div>

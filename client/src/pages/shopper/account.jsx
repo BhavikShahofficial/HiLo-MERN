@@ -6,7 +6,7 @@ import ShopperOrders from "@/components/shopper/orders";
 function ShopperAccount() {
   return (
     <div className="flex flex-col">
-      <div className="relative h-[300px] w-full overflow-hidden">
+      <div className="relative h-auto w-full overflow-hidden">
         <img src={accountImg} />
       </div>
       <div className="container mx-auto grid grid-cols-1 gap-8 py-8">

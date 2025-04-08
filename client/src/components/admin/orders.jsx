@@ -38,76 +38,79 @@ function AdminOrdersCard() {
     }
   });
 
-  console.log("Order", orderList);
+  // console.log("Order", orderList);
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>All Orders</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Order ID</TableHead>
-              <TableHead>Order Date</TableHead>
-              <TableHead>Order Status</TableHead>
-              <TableHead>Order Price</TableHead>
-              <TableHead>
-                <span className="sr-only">Details</span>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orderList && orderList.length > 0
-              ? orderList.map((orderItem) => (
-                  <TableRow key={orderItem._id}>
-                    <TableCell>{orderItem._id}</TableCell>
-                    <TableCell>{orderItem.orderDate.split("T")[0]}</TableCell>
-                    <TableCell>
-                      <Badge
-                        className={`px-3 py-1 ${
-                          orderItem?.orderStatus === "Confirmed"
-                            ? "bg-green-500"
-                            : orderItem?.orderStatus === "rejected"
-                            ? "bg-red-600"
-                            : "bg-black"
-                        }`}
-                      >
-                        {orderItem.orderStatus}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>${orderItem.totalAmount}</TableCell>
-                    <TableCell>
-                      <Dialog
-                        open={openDetailsDialog}
-                        onOpenChange={(isOpen) => {
-                          setOpenDetailsDialog(isOpen);
-                          if (!isOpen) dispatch(resetOrderDetails());
-                        }}
-                      >
-                        <DialogTrigger asChild>
-                          <Button
-                            onClick={() =>
-                              handleFetchOrderDetails(orderItem?._id)
-                            }
-                          >
-                            View Details
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          {orderDetails ? (
-                            <AdminOrderDetails orderDetails={orderDetails} />
-                          ) : (
-                            <p>Loading order details...</p>
-                          )}
-                        </DialogContent>
-                      </Dialog>
-                    </TableCell>
-                  </TableRow>
-                ))
-              : null}
-          </TableBody>
-        </Table>
+        {/* Make sure parent allows horizontal scrolling */}
+        <div className="w-full overflow-x-auto">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Order Date</TableHead>
+                <TableHead>Order Status</TableHead>
+                <TableHead>Order Price</TableHead>
+                <TableHead>
+                  <span className="sr-only">Details</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orderList?.map((orderItem) => (
+                <TableRow key={orderItem._id}>
+                  <TableCell className="break-all max-w-[150px]">
+                    {orderItem._id}
+                  </TableCell>
+                  <TableCell>{orderItem.orderDate.split("T")[0]}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={`px-3 py-1 text-white ${
+                        orderItem?.orderStatus === "Confirmed"
+                          ? "bg-green-500"
+                          : orderItem?.orderStatus === "rejected"
+                          ? "bg-red-600"
+                          : "bg-gray-800"
+                      }`}
+                    >
+                      {orderItem.orderStatus}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>${orderItem.totalAmount}</TableCell>
+                  <TableCell>
+                    <Dialog
+                      open={openDetailsDialog}
+                      onOpenChange={(isOpen) => {
+                        setOpenDetailsDialog(isOpen);
+                        if (!isOpen) dispatch(resetOrderDetails());
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button
+                          onClick={() =>
+                            handleFetchOrderDetails(orderItem?._id)
+                          }
+                        >
+                          View Details
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        {orderDetails ? (
+                          <AdminOrderDetails orderDetails={orderDetails} />
+                        ) : (
+                          <p>Loading order details...</p>
+                        )}
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );
