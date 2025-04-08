@@ -35,9 +35,12 @@ export const capturePayment = createAsyncThunk(
 );
 export const getAllOrdersByUser = createAsyncThunk(
   "/order/getAllOrdersByUser",
-  async (userId) => {
+  async ({ userId, status }) => {
+    const statusParam = status ? `?status=${status}` : "";
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/shop/order/list/${userId}`
+      `${
+        import.meta.env.VITE_API_URL
+      }/api/shop/order/list/${userId}${statusParam}`
     );
     return response.data;
   }

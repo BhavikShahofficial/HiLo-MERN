@@ -157,13 +157,21 @@ const capturePayment = async (req, res) => {
 const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const orders = await Orders.find({ userId });
+    const { status } = req.query;
+
+    const query = { userId };
+    if (status) {
+      query.orderStatus = status;
+    }
+
+    const orders = await Orders.find(query);
 
     if (!orders.length) {
       return res
         .status(404)
-        .json({ message: "Order not found", success: false });
+        .json({ message: "No orders found", success: false });
     }
+
     res.status(200).json({
       success: true,
       data: orders,
@@ -176,6 +184,7 @@ const getAllOrdersByUser = async (req, res) => {
     });
   }
 };
+
 const getOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;

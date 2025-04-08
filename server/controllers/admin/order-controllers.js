@@ -2,13 +2,21 @@ const Orders = require("../../models/Orders");
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Orders.find({});
+    const { status } = req.query;
+
+    let query = {};
+    if (status && status !== "all") {
+      query.orderStatus = status;
+    }
+
+    const orders = await Orders.find(query);
 
     if (!orders.length) {
       return res
         .status(404)
         .json({ message: "Order not found", success: false });
     }
+
     res.status(200).json({
       success: true,
       data: orders,
@@ -70,4 +78,29 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = { getAllOrders, getOrderDetailsForAdmin, updateOrderStatus };
+const deleteOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedOrder = await Orders.findByIdAndDelete(id);
+
+    if (!deletedOrder) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Order deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  getAllOrders,
+  getOrderDetailsForAdmin,
+  updateOrderStatus,
+  deleteOrder,
+};

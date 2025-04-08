@@ -8,9 +8,10 @@ const initialState = {
 
 export const getAllOrdersForAdmin = createAsyncThunk(
   "/order/getAllOrdersForAdmin",
-  async () => {
+  async (status) => {
+    const query = status ? `?status=${status}` : "";
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/admin/orders/get`
+      `${import.meta.env.VITE_API_URL}/api/admin/orders/get${query}`
     );
     return response.data;
   }
@@ -34,6 +35,16 @@ export const updateOrderStatus = createAsyncThunk(
       }
     );
     return response.data;
+  }
+);
+
+export const deleteOrderById = createAsyncThunk(
+  "/order/deleteOrderById",
+  async (id) => {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/api/admin/orders/delete/${id}`
+    );
+    return { id, ...response.data };
   }
 );
 
@@ -68,6 +79,11 @@ const adminOrderSlice = createSlice({
       .addCase(getOrderDetailsForAdmin.rejected, (state) => {
         state.isLoading = false;
         state.orderDetails = null;
+      })
+      .addCase(deleteOrderById.fulfilled, (state, action) => {
+        state.orderList = state.orderList.filter(
+          (order) => order._id !== action.payload.id
+        );
       });
   },
 });
