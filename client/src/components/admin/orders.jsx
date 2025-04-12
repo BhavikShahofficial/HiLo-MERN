@@ -20,7 +20,7 @@ import {
 } from "@/store/admin/orderSlice";
 import { Badge } from "../ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { DeleteIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 
 function AdminOrdersCard() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -135,7 +135,7 @@ function AdminOrdersCard() {
                           }
                           className="ml-2"
                         >
-                          <DeleteIcon />
+                          <TrashIcon />
                         </Button>
                       </TableCell>
                     </TableRow>

@@ -70,14 +70,24 @@ const addProductReview = async (req, res) => {
 const getProductReview = async (req, res) => {
   try {
     const { productId } = req.params;
-    const reviews = await ProductReview.find({ productId });
+
+    let reviews;
+    if (productId) {
+      // Single product's reviews
+      reviews = await ProductReview.find({ productId });
+    } else {
+      // All product reviews
+      reviews = await ProductReview.find();
+    }
+
     res.status(200).json({ success: true, data: reviews });
   } catch (error) {
     console.log(error);
     res.status(400).json({
-      message: error,
+      message: "Failed to fetch reviews",
       success: false,
     });
   }
 };
+
 module.exports = { addProductReview, getProductReview };

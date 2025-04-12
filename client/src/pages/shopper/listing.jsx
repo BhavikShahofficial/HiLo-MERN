@@ -12,6 +12,7 @@ import {
 import { sortOptions } from "@/config";
 import { useToast } from "@/hooks/use-toast";
 import { addToCart, fetchCartItem } from "@/store/shop/cartSlice";
+import { getProductReviews } from "@/store/shop/product-reviewSlice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
@@ -53,6 +54,10 @@ function ShopperListing() {
   function handleSort(value) {
     setSort(value);
   }
+
+  useEffect(() => {
+    dispatch(getProductReviews()); // fetch all reviews once when shopper page loads
+  }, [dispatch]);
 
   function handleGetProductDetails(getCurrentProductId) {
     console.log(getCurrentProductId);
@@ -169,9 +174,9 @@ function ShopperListing() {
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4 p-4 md:p-6">
       <ProductFilter filter={filter} handleFilter={handleFilter} />
       <div className="bg-background w-full rounded-lg shadow-sm">
-        <div className="p-4 border-b flex item-center justify-between">
+        <div className="p-3 border-b md:flex item-center justify-between">
           <h2 className="text-lg font-bold">Shopper Listings</h2>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground">
               {productList?.length || 0}-Items
             </span>
