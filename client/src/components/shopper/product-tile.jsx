@@ -1,22 +1,32 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import StarRatingComponent from "../common/star-rating";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
+import { getProductReviews } from "../../store/shop/product-reviewSlice/index"; // Import your async thunk
 
 function ShoppingProductTile({
   product,
   handleGetProductDetails,
   handleAddToCart,
 }) {
-  // console.log("Product in Tile:", product);
-  // console.log("Product Image in Tile:", product.image);
+  const dispatch = useDispatch();
   const { reviews } = useSelector((state) => state.shopProductReview);
 
-  // Instead of filtering the entire list:
+  // Fetch reviews when the component mounts or when the product changes
+  useEffect(() => {
+    // If product ID changes, fetch new reviews for that product
+    if (product._id) {
+      dispatch(getProductReviews(product._id)); // Dispatch action to fetch reviews for the specific product
+    }
+  }, [dispatch, product._id]); // Ensure this effect runs on component mount and product changes
+
+  // Safely handle cases where reviews might be empty or undefined
   const productReviews = reviews?.[product._id] || [];
 
+  // Calculate the average review only if there are reviews
   const averageReview =
     productReviews.length > 0
       ? productReviews.reduce((sum, r) => sum + r.reviewValue, 0) /

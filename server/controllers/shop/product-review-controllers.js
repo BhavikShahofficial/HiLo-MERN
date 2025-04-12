@@ -7,6 +7,14 @@ const addProductReview = async (req, res) => {
     const { productId, userId, userName, reviewMessage, reviewValue } =
       req.body;
 
+    // Validate reviewValue
+    if (reviewValue < 1 || reviewValue > 5) {
+      return res.status(400).json({
+        message: "Review value must be between 1 and 5.",
+        success: false,
+      });
+    }
+
     // Check if user has purchased the product
     const order = await Order.findOne({
       userId: userId,
@@ -45,14 +53,29 @@ const addProductReview = async (req, res) => {
 
     await newReview.save();
 
-    // Update average rating for product
-    const reviews = await ProductReview.find({ productId });
-    const totalReviewLength = reviews.length;
-    const averageReview =
-      reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
-      totalReviewLength;
+    // Update the product's average rating incrementally
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found.",
+        success: false,
+      });
+    }
 
-    await Product.findByIdAndUpdate(productId, { averageReview });
+    // Incrementally update the average rating
+    const totalReviews = product.totalReviews || 0;
+    const totalRating = product.totalRating || 0;
+    const newTotalRating = totalRating + reviewValue;
+    const newTotalReviews = totalReviews + 1;
+
+    const averageReview = newTotalRating / newTotalReviews;
+
+    // Update product's average review and total reviews
+    await Product.findByIdAndUpdate(productId, {
+      averageReview,
+      totalReviews: newTotalReviews,
+      totalRating: newTotalRating,
+    });
 
     return res.status(201).json({
       data: newReview,
